@@ -1,0 +1,26 @@
+{
+  "name": "rmutp_0185_s168",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jirapinya00/rmutp_0185_s1_68.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jirapinya00/rmutp_0185_s1_68/issues"
+  },
+  "homepage": "https://github.com/jirapinya00/rmutp_0185_s1_68#readme",
+  "dependencies": {
+    "@prisma/client": "^6.13.0",
+    "express": "^5.1.0",
+    "prisma": "^6.13.0",
+    "sqlite3": "^5.1.7"
+  }
+}
