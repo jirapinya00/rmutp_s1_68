@@ -5,4 +5,9 @@ jirapinya srikaew
 
 ```
 npx prisma studio
+docker-compose up -d
+```
+
+# Schema 
+```
 ```

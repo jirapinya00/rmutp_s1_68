@@ -12,9 +12,10 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String @id @default(uuid())
   username String @unique
   password String
-  cardId   String @unique
-  mobile   String
+  cardId   String 
+  mobile   String 
+  status   Boolean
 }

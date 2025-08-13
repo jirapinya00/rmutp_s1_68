@@ -122,7 +122,8 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   password: 'password',
   cardId: 'cardId',
-  mobile: 'mobile'
+  mobile: 'mobile',
+  status: 'status'
 };
 
 exports.Prisma.SortOrder = {
