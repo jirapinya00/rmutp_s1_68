@@ -1,10 +1,13 @@
 {
   "name": "rmutp_0185_s168",
   "version": "1.0.0",
-  "description": "",
+  "description": "jirapinya srikaew",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p app",                
+    "start": "node app/dist/server.js",   
+    "dev": "ts-node app/server.ts",       
+    "tsc": "tsc -p app && node app/dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,11 +24,13 @@
     "@hono/node-server": "^1.19.0",
     "@prisma/client": "^6.13.0",
     "express": "^5.1.0",
-    "hono": "^4.9.2",
+    "hono": "^4.9.4",
     "prisma": "^6.13.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "ts-node": "^10.9.2"
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
