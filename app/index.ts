@@ -7,8 +7,8 @@ app.get("/", (c) => c.text("Hello World"));
 
 app.get("/about", (c) => {
     return c.json({
-      massage: "About Page",
-    });
+      massage: "Jirapinya",
+    }); 
 });
 
 export default app;

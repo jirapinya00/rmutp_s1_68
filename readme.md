@@ -35,3 +35,6 @@ npx prisma generate
 npx prisma 
 
 ```
+## RUN THIS project
+
+npm run build

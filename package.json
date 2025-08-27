@@ -4,10 +4,10 @@
   "description": "jirapinya srikaew",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p app",                
-    "start": "node app/dist/server.js",   
-    "dev": "ts-node app/server.ts",       
-    "tsc": "tsc -p app && node app/dist/server.js"
+   "build": "tsc",
+  "start": "node dist/server.js",
+  "dev": "ts-node app/server.ts",
+  "tsc": "tsc && node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,8 @@
     "express": "^5.1.0",
     "hono": "^4.9.4",
     "prisma": "^6.13.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "stc": "^2.0.14"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
