@@ -4,9 +4,9 @@
   "description": "jirapinya srikaew",
   "main": "index.js",
   "scripts": {
-   "build": "tsc",
-  "start": "node dist/server.js",
-  "dev": "ts-node app/server.ts"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node app/server.ts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@hono/node-server": "^1.19.0",
     "@prisma/client": "^6.14.0",
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "hono": "^4.9.4",
     "sqlite3": "^5.1.7",
