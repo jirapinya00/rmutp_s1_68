@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "target": "ES2017",
     "module": "CommonJS",
     "rootDir": "app",

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client";  
 import * as bcrypt from "bcrypt";
-
+import { encode,decode } from "./service";
 const app = new Hono();
 const prisma = new PrismaClient();
 
@@ -19,25 +19,55 @@ app.get("/profile", async (c) => {
     }, 200);
 });
 
+app.get("/profile/:id", async (c) => {
+  const id = c.req.param("id"); 
+  console.log("profile id ",id);
+  return c.json({
+    data:id
+  });
+});
 app.post("/profile", async (c) => {
   const body = await c.req.json();
 
-  const passwordHash = await bcrypt.hash(body.password, 10);
+  // 1) hash password
+  const passwordHash = await bcrypt.hash(String(body.password), 10);
 
-  const result = await prisma.profile.create({
+  // 2) encrypt cardId & mobile (เก็บ ciphertext ลง DB)
+  const encCardId = encode(String(body.cardId));
+  const encMobile = encode(String(body.mobile));
+
+  // 3) บันทึก DB
+  const created = await prisma.profile.create({
     data: {
-      username: body.username,
-      password: passwordHash,
-      cardId: body.cardId,
-      mobile: body.mobile,
-      status: false, // ใส่ชัด ๆ ตรงนี้
+      username: String(body.username),
+      password: passwordHash,  // hash
+      cardId: encCardId,       // ciphertext
+      mobile: encMobile,       // ciphertext
+      status: false,
     },
   });
 
-  return c.json({
-    message: "create profile completed",
-    data: result,
-  });
+  // 4) ตอบกลับเป็น JSON (ถอดรหัสให้ดู)
+  return c.json(
+    {
+      message: "create profile completed",
+      data: {
+        id: created.id,
+        username: created.username,
+        // ไม่ส่ง hash/ciphertext ออก — โชว์ค่าปกติแทน
+        password: body.password,
+        cardId: decode(encCardId),
+        mobile: decode(encMobile),
+      },
+    },
+    201
+  );
+});
+
+
+app.onError((err, c) => {
+  console.error("Unexpected error:", err);
+  return c.text("Service Unavailable", 503);
 });
 
 export default app;

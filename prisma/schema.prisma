@@ -11,10 +11,10 @@ datasource db {
 model Profile {
   id        String  @id @default(uuid())
   username  String  @unique
-  password  String
-  cardId    String  @unique @db.VarChar(13)
-  mobile    String  @unique @db.VarChar(10)
-  status    Boolean
-
-
+  password  String  @db.VarChar(72)  
+  cardId    String  @db.VarChar(72) 
+  mobile    String  @db.VarChar(72) 
+  status    Boolean 
 }
+
+
