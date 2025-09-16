@@ -30,17 +30,17 @@ app.post("/profile", async (c) => {
   const body = await c.req.json();
 
   // 1) hash password
-  const passwordHash = await bcrypt.hash(String(body.password), 10);
+ 
 
   // 2) encrypt cardId & mobile (เก็บ ciphertext ลง DB)
   const encCardId = encode(String(body.cardId));
   const encMobile = encode(String(body.mobile));
-
+  const encPassword = encode(String(body.password));
   // 3) บันทึก DB
   const created = await prisma.profile.create({
     data: {
       username: String(body.username),
-      password: passwordHash,  // hash
+      password: encPassword,  // hash
       cardId: encCardId,       // ciphertext
       mobile: encMobile,       // ciphertext
       status: false,
@@ -55,7 +55,7 @@ app.post("/profile", async (c) => {
         id: created.id,
         username: created.username,
         // ไม่ส่ง hash/ciphertext ออก — โชว์ค่าปกติแทน
-        password: body.password,
+        password: encPassword,
         cardId: decode(encCardId),
         mobile: decode(encMobile),
       },
