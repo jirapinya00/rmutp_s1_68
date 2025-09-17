@@ -7,10 +7,10 @@ POST http://localhost:3000/profile
 Content-Type: application/json
 
 {
-  "username": "user234 ",
+  "username": "user1 ",
   "password": "1234",
-  "cardId": "1234567274243",
-  "mobile": "0919556674"
+  "cardId": "1234567274222",
+  "mobile": "0919554633"
  
 }
 
