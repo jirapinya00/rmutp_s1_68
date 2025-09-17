@@ -9,12 +9,16 @@ datasource db {
 }
 
 model Profile {
-  id        String  @id @default(uuid())
-  username  String  @unique                
-  password  String  @db.VarChar(255)       
-  cardId    String  @db.Text               
-  mobile    String  @db.Text                
-  status    Boolean
+  id       String  @id @default(uuid())
+  username String  @unique
+
+  password String  @db.VarChar(255)
+
+  cardId   String  @unique @db.VarChar(255)   // เก็บ ciphertext base64
+  mobile   String  @unique @db.VarChar(255)   // เก็บ ciphertext base64
+
+  status   Boolean @default(false)
 }
+
 
 

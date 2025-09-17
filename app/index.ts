@@ -1,73 +1,70 @@
 import { Hono } from "hono";
-import { PrismaClient } from "@prisma/client";  
-import * as bcrypt from "bcrypt";
-import { encode,decode } from "./service";
+import { PrismaClient } from "@prisma/client";
+import { encode, decode } from "./service";
+
 const app = new Hono();
 const prisma = new PrismaClient();
 
-app.get("/", (c) => c.text("Hello World"));
-
-app.get("/about", (c) => {
-  return c.json({ message: "Jirapinya" });
-});
-
-app.get("/profile", async (c) => {               
-  const profile = await prisma.profile.findMany(); 
-  return c.json({
-        message: "get data completed",
-        data: profile
-    }, 200);
-});
-
-app.get("/profile/:id", async (c) => {
-  const id = c.req.param("id"); 
-  console.log("profile id ",id);
-  return c.json({
-    data:id
-  });
-});
+// POST /profile — เข้ารหัสแล้วเก็บ
 app.post("/profile", async (c) => {
-  const body = await c.req.json();
+  try {
+    const body = await c.req.json();
 
-  // 1) hash password
- 
+    const encPassword = encode(String(body.password)); // จะโชว์เป็นเข้ารหัสตอน GET
+    const encCardId   = encode(String(body.cardId));   // ถอดกลับได้ตอน GET
+    const encMobile   = encode(String(body.mobile));   // ถอดกลับได้ตอน GET
 
-  // 2) encrypt cardId & mobile (เก็บ ciphertext ลง DB)
-  const encCardId = encode(String(body.cardId));
-  const encMobile = encode(String(body.mobile));
-  const encPassword = encode(String(body.password));
-  // 3) บันทึก DB
-  const created = await prisma.profile.create({
-    data: {
-      username: String(body.username),
-      password: encPassword,  // hash
-      cardId: encCardId,       // ciphertext
-      mobile: encMobile,       // ciphertext
-      status: false,
-    },
-  });
-
-  // 4) ตอบกลับเป็น JSON (ถอดรหัสให้ดู)
-  return c.json(
-    {
-      message: "create profile completed",
+    const created = await prisma.profile.create({
       data: {
-        id: created.id,
-        username: created.username,
-        // ไม่ส่ง hash/ciphertext ออก — โชว์ค่าปกติแทน
+        username: String(body.username).trim(),
         password: encPassword,
-        cardId: decode(encCardId),
-        mobile: decode(encMobile),
+        cardId: encCardId,
+        mobile: encMobile,
+        status: false,
       },
-    },
-    201
-  );
+      select: { id: true, username: true, password: true, cardId: true, mobile: true, status: true },
+    });
+
+    return c.json({ message: "create profile completed", data: created }, 201);
+  } catch (err: any) {
+    if (err?.code === "P2002") return c.json({ error: `Duplicate value on ${err?.meta?.target}` }, 400);
+    if (err?.code === "P2000") return c.json({ error: "Value too long for column" }, 400);
+    console.error("POST /profile error:", err);
+    return c.text("Service Unavailable", 503);
+  }
 });
 
+// GET /profile — แสดงค่าจริงทุกตัวยกเว้น password (ยัง encode)
+app.get("/profile", async (c) => {
+  try {
+    const rows = await prisma.profile.findMany({
+      select: {
+        id: true,
+        username: true,
+        password: true, // ส่งเข้ารหัสออกไป
+        cardId: true,   // เก็บ enc:v1:cbc:...
+        mobile: true,   // เก็บ enc:v1:cbc:...
+        status: true,
+      },
+    });
 
-app.onError((err, c) => {
-  console.error("Unexpected error:", err);
-  return c.text("Service Unavailable", 503);
+    const isToken = (s?: string) =>
+      typeof s === "string" && s.startsWith("enc:v1:cbc:") && s.split(":").length === 5;
+
+    const data = rows.map((r) => ({
+      id: r.id,
+      username: r.username,
+      password: r.password,                         // ← ยังเข้ารหัส
+      cardId: isToken(r.cardId) ? decode(r.cardId) : r.cardId,   // ← ถอด ถ้าฟอร์แมตรองรับ
+      mobile: isToken(r.mobile) ? decode(r.mobile) : r.mobile,   // ← ถอด ถ้าฟอร์แมตรองรับ
+      status: r.status,
+    }));
+
+    return c.json({ message: "get data completed", data }, 200);
+  } catch (err) {
+    console.error("GET /profile failed:", err);
+    return c.json({ error: "Internal error on /profile", detail: String(err) }, 500);
+  }
 });
 
 export default app;

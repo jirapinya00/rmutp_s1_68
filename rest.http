@@ -1,16 +1,19 @@
+####### User Profile API ######
+GET http://localhost:3000/profile
 
-
+######## Create User Profile ########
 
 POST http://localhost:3000/profile
 Content-Type: application/json
 
 {
-  "username": "usกกers12 ",
+  "username": "user234 ",
   "password": "1234",
   "cardId": "1234567274243",
   "mobile": "0919556674"
  
 }
+
 
 
 
